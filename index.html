@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+
+<!-- PWA / Homescreen Meta -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Pizzafier">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#F5F0E8">
+<meta name="application-name" content="Casamas Pizzafier">
+<meta name="msapplication-TileColor" content="#F5F0E8">
+<meta name="format-detection" content="telephone=no">
+
+<!-- App Icons -->
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+
+<!-- Web App Manifest -->
+<link rel="manifest" href="manifest.json">
+
+<title>Casamas Pizzafier</title>
+
+<style>
+  :root {
+    --bg: #F5F0E8;
+    --card: #FFFBF5;
+    --text: #2C1810;
+    --muted: #7A6355;
+    --accent: #C4421A;
+    --accent-light: #E8DDD3;
+    --border: #E0D5C8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html {
+    font-size: 16px;
+    background: var(--bg);
+    /* Prevent overscroll bounce in standalone mode */
+    overscroll-behavior: none;
+  }
+
+  body {
+    font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100dvh;
+    /* Safe area insets for notch/home indicator */
+    padding-top: env(safe-area-inset-top);
+    padding-right: env(safe-area-inset-right);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-size-adjust: 100%;
+    /* Smooth scrolling */
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Standalone mode: add extra top padding for status bar */
+  @media all and (display-mode: standalone) {
+    body { padding-top: calc(env(safe-area-inset-top) + 8px); }
+  }
+
+  /* Prevent pull-to-refresh in standalone */
+  html, body { overscroll-behavior-y: none; }
+
+  .container { max-width: 520px; margin: 0 auto; padding: 24px 20px 60px; }
+
+  /* iPad layout */
+  @media (min-width: 768px) {
+    .container { max-width: 600px; padding: 40px 32px 80px; }
+  }
+
+  /* iPad Pro / larger tablets */
+  @media (min-width: 1024px) {
+    .container { max-width: 640px; padding: 48px 40px 100px; }
+    .header h1 { font-size: 2.5rem; }
+  }
+
+  /* Header */
+  .header { text-align: center; margin-bottom: 28px; }
+  .header-icon { font-size: 48px; display: block; margin-bottom: 6px; animation: float 3s ease-in-out infinite; }
+  @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+  .header h1 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 2rem; letter-spacing: -0.02em;
+    line-height: 1.1; font-weight: 400;
+  }
+  .header p { font-size: 0.875rem; color: var(--muted); margin-top: 6px; }
+
+  /* Cards */
+  .card {
+    background: var(--card); border-radius: 16px;
+    border: 1px solid var(--border); padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 12px rgba(44,24,16,0.08);
+  }
+  .card-label {
+    font-size: 0.75rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--muted); margin-bottom: 14px;
+  }
+
+  /* Dropdown */
+  .dropdown-wrap { margin-bottom: 20px; }
+  select {
+    width: 100%; padding: 14px 16px; border-radius: 12px;
+    border: 2px solid var(--border); background: var(--card);
+    font-family: inherit; font-size: 1rem; font-weight: 600;
+    color: var(--text);
+    -webkit-appearance: none; appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237A6355' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 16px center;
+    cursor: pointer; outline: none;
+    /* Prevent zoom on focus in iOS */
+    font-size: 16px;
+  }
+
+  /* Weight display */
+  .weight-display {
+    display: flex; justify-content: space-between;
+    align-items: baseline; margin-bottom: 10px;
+  }
+  .weight-value {
+    font-family: Georgia, serif; font-size: 2.5rem;
+    color: var(--text); line-height: 1;
+  }
+  .weight-unit { font-size: 1rem; color: var(--muted); font-weight: 500; margin-left: 4px; }
+  .weight-desc { font-size: 0.8rem; color: var(--muted); text-align: right; }
+
+  /* Range slider */
+  input[type="range"] {
+    -webkit-appearance: none; appearance: none;
+    width: 100%; height: 6px; border-radius: 3px;
+    background: var(--accent-light);
+    outline: none; margin: 8px 0;
+    /* Prevent zoom on interaction */
+    touch-action: manipulation;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 32px; height: 32px;
+    border-radius: 50%; background: var(--accent);
+    cursor: pointer; border: 3px solid var(--card);
+    box-shadow: 0 2px 8px rgba(196,66,26,0.3);
+    transition: transform 0.15s ease;
+  }
+  input[type="range"]:active::-webkit-slider-thumb { transform: scale(1.15); }
+  .slider-labels {
+    display: flex; justify-content: space-between;
+    font-size: 0.7rem; color: var(--muted); margin-top: 4px;
+  }
+
+  /* Ingredients */
+  .ingredients-card {
+    background: var(--card); border-radius: 16px;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 12px rgba(44,24,16,0.08);
+    overflow: hidden; margin-bottom: 20px;
+  }
+  .ingredients-header {
+    padding: 20px 24px 0; display: flex;
+    justify-content: space-between; align-items: center;
+  }
+  .ingredients-title { font-family: Georgia, serif; font-size: 1.25rem; }
+  .total-weight {
+    font-size: 0.8rem; color: var(--muted); font-weight: 500;
+    background: var(--accent-light); padding: 4px 10px; border-radius: 20px;
+  }
+  .ingredient-list { padding: 16px 24px 24px; }
+  .ingredient-row {
+    display: flex; justify-content: space-between;
+    align-items: center; padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .ingredient-row:last-child { border-bottom: none; }
+  .ingredient-name { font-size: 0.95rem; font-weight: 500; }
+  .ingredient-detail { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+  .ingredient-grams {
+    font-family: Georgia, serif; font-size: 1.25rem;
+    color: var(--accent); text-align: right;
+  }
+  .ingredient-volume {
+    font-size: 0.75rem; color: var(--muted);
+    margin-top: 2px; text-align: right;
+  }
+
+  /* Method */
+  .method-title { font-family: Georgia, serif; font-size: 1.25rem; margin-bottom: 16px; }
+  .method-step { display: flex; gap: 14px; margin-bottom: 16px; }
+  .method-step:last-child { margin-bottom: 0; }
+  .step-num {
+    flex-shrink: 0; width: 28px; height: 28px;
+    border-radius: 50%; background: var(--accent); color: white;
+    font-size: 0.8rem; font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    margin-top: 1px;
+  }
+  .step-text { font-size: 0.9rem; line-height: 1.55; }
+
+  .footer {
+    text-align: center; margin-top: 32px;
+    font-size: 0.75rem; color: var(--muted); line-height: 1.6;
+  }
+
+  /* Selection color */
+  ::selection { background: rgba(196, 66, 26, 0.2); }
+  ::-moz-selection { background: rgba(196, 66, 26, 0.2); }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <span class="header-icon">&#127829;</span>
+    <h1>Casamas Pizzafier</h1>
+    <p>Scaled to your needs</p>
+  </div>
+
+  <div class="card">
+    <div class="card-label">How many dough balls?</div>
+    <div class="dropdown-wrap">
+      <select id="ballSelect">
+        <option value="4" selected>4 dough balls</option>
+        <option value="5">5 dough balls</option>
+        <option value="6">6 dough balls</option>
+        <option value="7">7 dough balls</option>
+        <option value="8">8 dough balls</option>
+        <option value="9">9 dough balls</option>
+        <option value="10">10 dough balls</option>
+      </select>
+    </div>
+
+    <div class="card-label">Weight per ball</div>
+    <div class="weight-display">
+      <div><span class="weight-value" id="weightValue">250</span><span class="weight-unit">g</span></div>
+      <div class="weight-desc" id="sizeDesc">~12" pizza</div>
+    </div>
+    <input type="range" id="weightSlider" min="150" max="450" value="250" step="10">
+    <div class="slider-labels"><span>150g &middot; small</span><span>450g &middot; large</span></div>
+  </div>
+
+  <div class="ingredients-card">
+    <div class="ingredients-header">
+      <div class="ingredients-title">Ingredients</div>
+      <div class="total-weight" id="totalWeight">Total: 1000g</div>
+    </div>
+    <div class="ingredient-list" id="ingredientList"></div>
+  </div>
+
+  <div class="card" id="methodCard"></div>
+
+  <div class="footer">&copy; &amp; &trade; - Casamas, 2026.</div>
+</div>
+
+<script>
+// ===== RECIPE ENGINE =====
+var BASE_FLOUR = 306;
+var RATIOS = [
+  { key: "flour", ratio: 1.0, name: "Flour", detail: "" },
+  { key: "water", ratio: 200 / 306, name: "Lukewarm Water", detail: "~105\u00B0F / 40\u00B0C" },
+  { key: "salt", ratio: 8 / 306, name: "Fine Sea Salt", detail: "" },
+  { key: "yeast", ratio: 2 / 306, name: "Instant Yeast", detail: "Or active dry yeast" },
+  { key: "oil", ratio: 4 / 306, name: "Extra-Virgin Olive Oil", detail: "" }
+];
+var RATIO_SUM = 0;
+for (var r = 0; r < RATIOS.length; r++) { RATIO_SUM += RATIOS[r].ratio; }
+
+var VOLUME = {
+  flour: { perCup: 133 },
+  water: { perCup: 237 },
+  salt: { perTsp: 6 },
+  yeast: { perTsp: 3 },
+  oil: { perTsp: 4.5 }
+};
+
+var balls = 4;
+var weightPerBall = 250;
+
+function formatFrac(val) {
+  if (val < 0.1) return "\u215B";
+  var w = Math.floor(val);
+  var f = val - w;
+  var s = "";
+  if (f < 0.15) s = "";
+  else if (f < 0.29) s = "\u00BC";
+  else if (f < 0.42) s = "\u2153";
+  else if (f < 0.58) s = "\u00BD";
+  else if (f < 0.71) s = "\u2154";
+  else if (f < 0.85) s = "\u00BE";
+  else return String(w + 1);
+  if (w > 0) return w + " " + s;
+  return s || "0";
+}
+
+function toVol(key, g) {
+  var c = VOLUME[key];
+  if (c.perCup) {
+    var cups = g / c.perCup;
+    if (cups < 0.2) return (cups * 16).toFixed(1) + " tbsp";
+    return "~" + formatFrac(cups) + " cup" + (cups > 1 ? "s" : "");
+  }
+  var tsp = g / c.perTsp;
+  if (tsp >= 3) return (tsp / 3).toFixed(1) + " tbsp";
+  return formatFrac(tsp) + " tsp";
+}
+
+function sizeDesc(w) {
+  if (w <= 180) return "~8\u20139\" pizza";
+  if (w <= 220) return "~10\u201311\" pizza";
+  if (w <= 270) return "~12\" pizza";
+  if (w <= 320) return "~13\u201314\" pizza";
+  return "~15\u201316\" pizza";
+}
+
+function update() {
+  var total = balls * weightPerBall;
+  var flourBase = total / RATIO_SUM;
+  var html = "";
+
+  for (var i = 0; i < RATIOS.length; i++) {
+    var item = RATIOS[i];
+    var g = flourBase * item.ratio;
+    var rounded = (item.key === "flour" || item.key === "water") ? Math.round(g) : parseFloat(g.toFixed(1));
+    var vol = toVol(item.key, rounded);
+    var disp = (rounded % 1 === 0) ? rounded.toString() : rounded.toFixed(1);
+    var det = item.detail ? "<div class=\"ingredient-detail\">" + item.detail + "</div>" : "";
+
+    html += "<div class=\"ingredient-row\">" +
+      "<div><div class=\"ingredient-name\">" + item.name + "</div>" + det + "</div>" +
+      "<div><div class=\"ingredient-grams\">" + disp + "g</div>" +
+      "<div class=\"ingredient-volume\">" + vol + "</div></div></div>";
+  }
+
+  document.getElementById("ingredientList").innerHTML = html;
+  document.getElementById("totalWeight").textContent = "Total: " + total + "g";
+  document.getElementById("weightValue").textContent = weightPerBall;
+  document.getElementById("sizeDesc").textContent = sizeDesc(weightPerBall);
+
+  var step5;
+  if (balls === 1) {
+    step5 = "Place the dough ball in an olive oil\u2013lined Tupperware and refrigerate for 24\u201348 hours.";
+  } else {
+    step5 = "Separate the dough into " + balls + " dough balls and place each in an olive oil\u2013lined Tupperware. Place in the refrigerator and let them rest for 24\u201348 hours.";
+  }
+
+  var steps = [
+    "Combine the flour and salt in a large bowl.",
+    "In a separate bowl, stir together the lukewarm water, yeast, and olive oil. Pour into the flour mixture.",
+    "Mix with a dough hook in a stand mixer for 5\u20137 minutes on speed 2.",
+    "Cover the mixed dough with saran wrap and let it rise on the counter for 2 hours.",
+    step5,
+    "Take dough balls out of the refrigerator 20\u201330 minutes before using.",
+    "Stretch each ball on a well-floured surface using your fingers, then shape by hand into rounds."
+  ];
+
+  var mhtml = "<div class=\"method-title\">Method</div>";
+  for (var s = 0; s < steps.length; s++) {
+    mhtml += "<div class=\"method-step\">" +
+      "<div class=\"step-num\">" + (s + 1) + "</div>" +
+      "<div class=\"step-text\">" + steps[s] + "</div></div>";
+  }
+  document.getElementById("methodCard").innerHTML = mhtml;
+}
+
+// ===== EVENT LISTENERS =====
+document.getElementById("ballSelect").addEventListener("change", function(e) {
+  balls = parseInt(e.target.value);
+  update();
+});
+
+document.getElementById("weightSlider").addEventListener("input", function(e) {
+  weightPerBall = parseInt(e.target.value);
+  update();
+});
+
+// Initial render
+update();
+
+// ===== SERVICE WORKER REGISTRATION =====
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function() {
+    navigator.serviceWorker.register("sw.js").then(
+      function() { /* registered */ },
+      function() { /* failed, app still works, just no offline */ }
+    );
+  });
+}
+</script>
+</body>
+</html>

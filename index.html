@@ -33,6 +33,10 @@
     --accent: #C4421A;
     --accent-light: #E8DDD3;
     --border: #E0D5C8;
+    --green: #2D8A4E;
+    --green-light: #E2F0E7;
+    --blue: #2A6CB6;
+    --blue-light: #E3EDF7;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -40,7 +44,6 @@
   html {
     font-size: 16px;
     background: var(--bg);
-    /* Prevent overscroll bounce in standalone mode */
     overscroll-behavior: none;
   }
 
@@ -49,33 +52,23 @@
     background: var(--bg);
     color: var(--text);
     min-height: 100dvh;
-    /* Safe area insets for notch/home indicator */
     padding-top: env(safe-area-inset-top);
     padding-right: env(safe-area-inset-right);
     padding-bottom: env(safe-area-inset-bottom);
     padding-left: env(safe-area-inset-left);
     -webkit-font-smoothing: antialiased;
     -webkit-text-size-adjust: 100%;
-    /* Smooth scrolling */
     -webkit-overflow-scrolling: touch;
   }
 
-  /* Standalone mode: add extra top padding for status bar */
   @media all and (display-mode: standalone) {
     body { padding-top: calc(env(safe-area-inset-top) + 8px); }
   }
 
-  /* Prevent pull-to-refresh in standalone */
   html, body { overscroll-behavior-y: none; }
 
   .container { max-width: 520px; margin: 0 auto; padding: 24px 20px 60px; }
-
-  /* iPad layout */
-  @media (min-width: 768px) {
-    .container { max-width: 600px; padding: 40px 32px 80px; }
-  }
-
-  /* iPad Pro / larger tablets */
+  @media (min-width: 768px) { .container { max-width: 600px; padding: 40px 32px 80px; } }
   @media (min-width: 1024px) {
     .container { max-width: 640px; padding: 48px 40px 100px; }
     .header h1 { font-size: 2.5rem; }
@@ -85,50 +78,28 @@
   .header { text-align: center; margin-bottom: 28px; }
   .header-icon { font-size: 48px; display: block; margin-bottom: 6px; animation: float 3s ease-in-out infinite; }
   @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
-  .header h1 {
-    font-family: Georgia, 'Times New Roman', serif;
-    font-size: 2rem; letter-spacing: -0.02em;
-    line-height: 1.1; font-weight: 400;
-  }
+  .header h1 { font-family: Georgia, 'Times New Roman', serif; font-size: 2rem; letter-spacing: -0.02em; line-height: 1.1; font-weight: 400; }
   .header p { font-size: 0.875rem; color: var(--muted); margin-top: 6px; }
 
   /* Cards */
-  .card {
-    background: var(--card); border-radius: 16px;
-    border: 1px solid var(--border); padding: 24px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 12px rgba(44,24,16,0.08);
-  }
-  .card-label {
-    font-size: 0.75rem; font-weight: 600;
-    text-transform: uppercase; letter-spacing: 0.08em;
-    color: var(--muted); margin-bottom: 14px;
-  }
+  .card { background: var(--card); border-radius: 16px; border: 1px solid var(--border); padding: 24px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(44,24,16,0.08); }
+  .card-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 14px; }
 
   /* Dropdown */
   .dropdown-wrap { margin-bottom: 20px; }
   select {
     width: 100%; padding: 14px 16px; border-radius: 12px;
     border: 2px solid var(--border); background: var(--card);
-    font-family: inherit; font-size: 1rem; font-weight: 600;
-    color: var(--text);
+    font-family: inherit; font-size: 16px; font-weight: 600; color: var(--text);
     -webkit-appearance: none; appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237A6355' stroke-width='2' fill='none'/%3E%3C/svg%3E");
     background-repeat: no-repeat; background-position: right 16px center;
     cursor: pointer; outline: none;
-    /* Prevent zoom on focus in iOS */
-    font-size: 16px;
   }
 
   /* Weight display */
-  .weight-display {
-    display: flex; justify-content: space-between;
-    align-items: baseline; margin-bottom: 10px;
-  }
-  .weight-value {
-    font-family: Georgia, serif; font-size: 2.5rem;
-    color: var(--text); line-height: 1;
-  }
+  .weight-display { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
+  .weight-value { font-family: Georgia, serif; font-size: 2.5rem; color: var(--text); line-height: 1; }
   .weight-unit { font-size: 1rem; color: var(--muted); font-weight: 500; margin-left: 4px; }
   .weight-desc { font-size: 0.8rem; color: var(--muted); text-align: right; }
 
@@ -136,9 +107,7 @@
   input[type="range"] {
     -webkit-appearance: none; appearance: none;
     width: 100%; height: 6px; border-radius: 3px;
-    background: var(--accent-light);
-    outline: none; margin: 8px 0;
-    /* Prevent zoom on interaction */
+    background: var(--accent-light); outline: none; margin: 8px 0;
     touch-action: manipulation;
   }
   input[type="range"]::-webkit-slider-thumb {
@@ -149,66 +118,114 @@
     transition: transform 0.15s ease;
   }
   input[type="range"]:active::-webkit-slider-thumb { transform: scale(1.15); }
-  .slider-labels {
-    display: flex; justify-content: space-between;
-    font-size: 0.7rem; color: var(--muted); margin-top: 4px;
-  }
+  .slider-labels { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--muted); margin-top: 4px; }
 
   /* Ingredients */
-  .ingredients-card {
-    background: var(--card); border-radius: 16px;
-    border: 1px solid var(--border);
-    box-shadow: 0 2px 12px rgba(44,24,16,0.08);
-    overflow: hidden; margin-bottom: 20px;
-  }
-  .ingredients-header {
-    padding: 20px 24px 0; display: flex;
-    justify-content: space-between; align-items: center;
-  }
+  .ingredients-card { background: var(--card); border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 2px 12px rgba(44,24,16,0.08); overflow: hidden; margin-bottom: 20px; }
+  .ingredients-header { padding: 20px 24px 0; display: flex; justify-content: space-between; align-items: center; }
   .ingredients-title { font-family: Georgia, serif; font-size: 1.25rem; }
-  .total-weight {
-    font-size: 0.8rem; color: var(--muted); font-weight: 500;
-    background: var(--accent-light); padding: 4px 10px; border-radius: 20px;
-  }
+  .total-weight { font-size: 0.8rem; color: var(--muted); font-weight: 500; background: var(--accent-light); padding: 4px 10px; border-radius: 20px; }
   .ingredient-list { padding: 16px 24px 24px; }
-  .ingredient-row {
-    display: flex; justify-content: space-between;
-    align-items: center; padding: 14px 0;
-    border-bottom: 1px solid var(--border);
-  }
+  .ingredient-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--border); }
   .ingredient-row:last-child { border-bottom: none; }
   .ingredient-name { font-size: 0.95rem; font-weight: 500; }
   .ingredient-detail { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
-  .ingredient-grams {
-    font-family: Georgia, serif; font-size: 1.25rem;
-    color: var(--accent); text-align: right;
-  }
-  .ingredient-volume {
-    font-size: 0.75rem; color: var(--muted);
-    margin-top: 2px; text-align: right;
-  }
+  .ingredient-grams { font-family: Georgia, serif; font-size: 1.25rem; color: var(--accent); text-align: right; }
+  .ingredient-volume { font-size: 0.75rem; color: var(--muted); margin-top: 2px; text-align: right; }
 
   /* Method */
   .method-title { font-family: Georgia, serif; font-size: 1.25rem; margin-bottom: 16px; }
   .method-step { display: flex; gap: 14px; margin-bottom: 16px; }
   .method-step:last-child { margin-bottom: 0; }
-  .step-num {
-    flex-shrink: 0; width: 28px; height: 28px;
-    border-radius: 50%; background: var(--accent); color: white;
-    font-size: 0.8rem; font-weight: 600;
-    display: flex; align-items: center; justify-content: center;
-    margin-top: 1px;
-  }
+  .step-num { flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: white; font-size: 0.8rem; font-weight: 600; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
   .step-text { font-size: 0.9rem; line-height: 1.55; }
 
-  .footer {
-    text-align: center; margin-top: 32px;
-    font-size: 0.75rem; color: var(--muted); line-height: 1.6;
+  /* ===== TIME PLANNER ===== */
+  .planner-card { background: var(--card); border-radius: 16px; border: 1px solid var(--border); padding: 24px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(44,24,16,0.08); }
+
+  .time-input-row { display: flex; gap: 10px; margin-bottom: 16px; align-items: center; }
+  .time-input-group { flex: 1; }
+  .time-input-group label { display: block; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 6px; }
+  input[type="date"], input[type="time"] {
+    width: 100%; padding: 12px 14px; border-radius: 12px;
+    border: 2px solid var(--border); background: var(--card);
+    font-family: inherit; font-size: 16px; font-weight: 600; color: var(--text);
+    outline: none; cursor: pointer;
   }
 
-  /* Selection color */
+  .rest-select-row { margin-bottom: 16px; }
+  .rest-select-row label { display: block; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 6px; }
+
+  .plan-btn {
+    width: 100%; padding: 16px; border: none; border-radius: 12px;
+    background: var(--accent); color: white;
+    font-family: inherit; font-size: 1rem; font-weight: 600;
+    cursor: pointer; transition: all 0.15s ease;
+    letter-spacing: 0.02em;
+  }
+  .plan-btn:active { transform: scale(0.98); opacity: 0.9; }
+
+  /* Timeline */
+  .timeline { margin-top: 20px; }
+  .timeline-item { display: flex; gap: 14px; position: relative; padding-bottom: 20px; }
+  .timeline-item:last-child { padding-bottom: 0; }
+  .timeline-item:not(:last-child)::before {
+    content: ""; position: absolute; left: 15px; top: 36px;
+    bottom: 0; width: 2px; background: var(--border);
+  }
+  .tl-dot {
+    flex-shrink: 0; width: 32px; height: 32px;
+    border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-size: 14px; margin-top: 2px;
+  }
+  .tl-dot-mix { background: var(--accent-light); }
+  .tl-dot-rest { background: var(--blue-light); }
+  .tl-dot-fridge { background: var(--blue-light); }
+  .tl-dot-out { background: var(--green-light); }
+  .tl-dot-cook { background: #FDEBD0; }
+
+  .tl-content { flex: 1; }
+  .tl-time { font-family: Georgia, serif; font-size: 1.1rem; color: var(--text); font-weight: 400; }
+  .tl-day { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-left: 6px; }
+  .tl-label { font-size: 0.85rem; color: var(--muted); margin-top: 3px; line-height: 1.4; }
+
+  .tl-notify-btn {
+    margin-top: 8px; padding: 6px 14px;
+    border: 1.5px solid var(--border); border-radius: 20px;
+    background: var(--card); color: var(--muted);
+    font-family: inherit; font-size: 0.75rem; font-weight: 600;
+    cursor: pointer; transition: all 0.15s ease;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .tl-notify-btn:active { transform: scale(0.96); }
+  .tl-notify-btn.set {
+    border-color: var(--green); color: var(--green);
+    background: var(--green-light);
+  }
+
+  .set-all-btn {
+    margin-top: 16px; width: 100%; padding: 14px;
+    border: 2px solid var(--accent); border-radius: 12px;
+    background: transparent; color: var(--accent);
+    font-family: inherit; font-size: 0.9rem; font-weight: 600;
+    cursor: pointer; transition: all 0.15s ease;
+  }
+  .set-all-btn:active { transform: scale(0.98); background: #FFF5F0; }
+
+  .footer { text-align: center; margin-top: 32px; font-size: 0.75rem; color: var(--muted); line-height: 1.6; }
+
+  /* Toast notification */
+  .toast {
+    position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%) translateY(100px);
+    background: var(--text); color: white; padding: 14px 24px;
+    border-radius: 12px; font-size: 0.85rem; font-weight: 500;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease; z-index: 100;
+    text-align: center; max-width: 320px;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
   ::selection { background: rgba(196, 66, 26, 0.2); }
-  ::-moz-selection { background: rgba(196, 66, 26, 0.2); }
 </style>
 </head>
 <body>
@@ -219,6 +236,7 @@
     <p>Scaled to your needs</p>
   </div>
 
+  <!-- Dough Config -->
   <div class="card">
     <div class="card-label">How many dough balls?</div>
     <div class="dropdown-wrap">
@@ -232,7 +250,6 @@
         <option value="10">10 dough balls</option>
       </select>
     </div>
-
     <div class="card-label">Weight per ball</div>
     <div class="weight-display">
       <div><span class="weight-value" id="weightValue">250</span><span class="weight-unit">g</span></div>
@@ -242,6 +259,32 @@
     <div class="slider-labels"><span>150g &middot; small</span><span>450g &middot; large</span></div>
   </div>
 
+  <!-- Time Planner -->
+  <div class="planner-card">
+    <div class="card-label">&#9200; Plan your cook time</div>
+    <div class="time-input-row">
+      <div class="time-input-group">
+        <label>Cook Date</label>
+        <input type="date" id="cookDate">
+      </div>
+      <div class="time-input-group">
+        <label>Cook Time</label>
+        <input type="time" id="cookTime" value="18:00">
+      </div>
+    </div>
+    <div class="rest-select-row">
+      <label>Room temp rest before cooking</label>
+      <select id="restTime">
+        <option value="60">1 hour</option>
+        <option value="90" selected>1.5 hours</option>
+        <option value="120">2 hours</option>
+      </select>
+    </div>
+    <button class="plan-btn" id="planBtn">Calculate Schedule</button>
+    <div id="timeline"></div>
+  </div>
+
+  <!-- Ingredients -->
   <div class="ingredients-card">
     <div class="ingredients-header">
       <div class="ingredients-title">Ingredients</div>
@@ -250,10 +293,14 @@
     <div class="ingredient-list" id="ingredientList"></div>
   </div>
 
+  <!-- Method -->
   <div class="card" id="methodCard"></div>
 
   <div class="footer">&copy; &amp; &trade; - Casamas, 2026.</div>
 </div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
 
 <script>
 // ===== RECIPE ENGINE =====
@@ -268,22 +315,14 @@ var RATIOS = [
 var RATIO_SUM = 0;
 for (var r = 0; r < RATIOS.length; r++) { RATIO_SUM += RATIOS[r].ratio; }
 
-var VOLUME = {
-  flour: { perCup: 133 },
-  water: { perCup: 237 },
-  salt: { perTsp: 6 },
-  yeast: { perTsp: 3 },
-  oil: { perTsp: 4.5 }
-};
-
+var VOLUME = { flour:{perCup:133}, water:{perCup:237}, salt:{perTsp:6}, yeast:{perTsp:3}, oil:{perTsp:4.5} };
 var balls = 4;
 var weightPerBall = 250;
+var scheduledTimers = {};
 
 function formatFrac(val) {
   if (val < 0.1) return "\u215B";
-  var w = Math.floor(val);
-  var f = val - w;
-  var s = "";
+  var w = Math.floor(val), f = val - w, s = "";
   if (f < 0.15) s = "";
   else if (f < 0.29) s = "\u00BC";
   else if (f < 0.42) s = "\u2153";
@@ -319,7 +358,6 @@ function update() {
   var total = balls * weightPerBall;
   var flourBase = total / RATIO_SUM;
   var html = "";
-
   for (var i = 0; i < RATIOS.length; i++) {
     var item = RATIOS[i];
     var g = flourBase * item.ratio;
@@ -327,13 +365,8 @@ function update() {
     var vol = toVol(item.key, rounded);
     var disp = (rounded % 1 === 0) ? rounded.toString() : rounded.toFixed(1);
     var det = item.detail ? "<div class=\"ingredient-detail\">" + item.detail + "</div>" : "";
-
-    html += "<div class=\"ingredient-row\">" +
-      "<div><div class=\"ingredient-name\">" + item.name + "</div>" + det + "</div>" +
-      "<div><div class=\"ingredient-grams\">" + disp + "g</div>" +
-      "<div class=\"ingredient-volume\">" + vol + "</div></div></div>";
+    html += "<div class=\"ingredient-row\"><div><div class=\"ingredient-name\">" + item.name + "</div>" + det + "</div><div><div class=\"ingredient-grams\">" + disp + "g</div><div class=\"ingredient-volume\">" + vol + "</div></div></div>";
   }
-
   document.getElementById("ingredientList").innerHTML = html;
   document.getElementById("totalWeight").textContent = "Total: " + total + "g";
   document.getElementById("weightValue").textContent = weightPerBall;
@@ -345,7 +378,6 @@ function update() {
   } else {
     step5 = "Separate the dough into " + balls + " dough balls and place each in an olive oil\u2013lined Tupperware. Place in the refrigerator and let them rest for 24\u201348 hours.";
   }
-
   var steps = [
     "Combine the flour and salt in a large bowl.",
     "In a separate bowl, stir together the lukewarm water, yeast, and olive oil. Pour into the flour mixture.",
@@ -355,14 +387,209 @@ function update() {
     "Take dough balls out of the refrigerator 20\u201330 minutes before using.",
     "Stretch each ball on a well-floured surface using your fingers, then shape by hand into rounds."
   ];
-
   var mhtml = "<div class=\"method-title\">Method</div>";
   for (var s = 0; s < steps.length; s++) {
-    mhtml += "<div class=\"method-step\">" +
-      "<div class=\"step-num\">" + (s + 1) + "</div>" +
-      "<div class=\"step-text\">" + steps[s] + "</div></div>";
+    mhtml += "<div class=\"method-step\"><div class=\"step-num\">" + (s + 1) + "</div><div class=\"step-text\">" + steps[s] + "</div></div>";
   }
   document.getElementById("methodCard").innerHTML = mhtml;
+}
+
+// ===== TIME PLANNER =====
+function formatTime12(date) {
+  var h = date.getHours();
+  var m = date.getMinutes();
+  var ampm = h >= 12 ? "PM" : "AM";
+  h = h % 12;
+  if (h === 0) h = 12;
+  var mStr = m < 10 ? "0" + m : "" + m;
+  return h + ":" + mStr + " " + ampm;
+}
+
+function dayLabel(date, cookDate) {
+  var today = new Date();
+  today.setHours(0,0,0,0);
+  var d = new Date(date);
+  d.setHours(0,0,0,0);
+  var cd = new Date(cookDate);
+  cd.setHours(0,0,0,0);
+  var diff = Math.round((d - today) / 86400000);
+
+  if (diff === 0) return "Today";
+  if (diff === 1) return "Tomorrow";
+  if (diff === -1) return "Yesterday";
+
+  var days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  return days[date.getDay()] + ", " + months[date.getMonth()] + " " + date.getDate();
+}
+
+function showToast(msg) {
+  var t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(function() { t.classList.remove("show"); }, 3000);
+}
+
+function requestNotifPermission(callback) {
+  if (!("Notification" in window)) {
+    showToast("Notifications not supported on this browser");
+    return;
+  }
+  if (Notification.permission === "granted") {
+    callback();
+  } else if (Notification.permission !== "denied") {
+    Notification.requestPermission().then(function(perm) {
+      if (perm === "granted") { callback(); }
+      else { showToast("Enable notifications in Settings to use timers"); }
+    });
+  } else {
+    showToast("Notifications blocked \u2014 enable in Settings > Safari");
+  }
+}
+
+function scheduleTimer(id, date, title, body) {
+  // Clear existing timer for this id
+  if (scheduledTimers[id]) {
+    clearTimeout(scheduledTimers[id]);
+    delete scheduledTimers[id];
+  }
+
+  var now = new Date().getTime();
+  var target = date.getTime();
+  var delay = target - now;
+
+  if (delay <= 0) {
+    showToast("That time has already passed!");
+    return false;
+  }
+
+  // Cap setTimeout to avoid overflow (max ~24.8 days, well within range)
+  scheduledTimers[id] = setTimeout(function() {
+    // Fire notification
+    if ("Notification" in window && Notification.permission === "granted") {
+      new Notification(title, { body: body, icon: "apple-touch-icon.png", tag: id });
+    }
+    // Also alert as fallback (works even if page is in foreground)
+    try { navigator.vibrate && navigator.vibrate([200, 100, 200]); } catch(e) {}
+    delete scheduledTimers[id];
+    // Update button state
+    var btn = document.getElementById("btn-" + id);
+    if (btn) {
+      btn.classList.remove("set");
+      btn.innerHTML = "\uD83D\uDD14 Set Reminder";
+    }
+  }, delay);
+
+  return true;
+}
+
+function buildTimeline() {
+  var dateVal = document.getElementById("cookDate").value;
+  var timeVal = document.getElementById("cookTime").value;
+  var restMin = parseInt(document.getElementById("restTime").value);
+
+  if (!dateVal || !timeVal) {
+    showToast("Please select a date and time");
+    return;
+  }
+
+  // Parse cook time
+  var cookDateTime = new Date(dateVal + "T" + timeVal + ":00");
+  if (isNaN(cookDateTime.getTime())) {
+    showToast("Invalid date or time");
+    return;
+  }
+
+  // Backtrack schedule:
+  // Cook time = user input
+  // Remove from fridge = cook time - restMin
+  // Put in fridge = remove from fridge - 24 hours
+  // Start mixing = put in fridge - 1 hour (counter rest)
+  // Mixing done (put on counter) = start mixing + ~10 min
+
+  var removeFromFridge = new Date(cookDateTime.getTime() - restMin * 60000);
+  var putInFridge = new Date(removeFromFridge.getTime() - 24 * 3600000);
+  var startMixing = new Date(putInFridge.getTime() - 60 * 60000);
+  var mixingDone = new Date(startMixing.getTime() + 10 * 60000);
+
+  var restLabel = restMin === 60 ? "1 hour" : (restMin === 90 ? "1.5 hours" : "2 hours");
+
+  var events = [
+    { id: "mix", time: startMixing, icon: "\uD83C\uDF5E", dot: "tl-dot-mix", label: "Start mixing dough", detail: "Combine ingredients and mix with dough hook for 5\u20137 min", notifyTitle: "\uD83C\uDF5E Time to mix!", notifyBody: "Start making your pizza dough now." },
+    { id: "counter", time: mixingDone, icon: "\u23F3", dot: "tl-dot-rest", label: "Cover and rest on counter", detail: "Wrap with saran wrap. Rest for 1 hour, then ball and refrigerate.", notifyTitle: "\u23F3 Counter rest started", notifyBody: "Dough is resting. Ball and refrigerate in 1 hour." },
+    { id: "fridge", time: putInFridge, icon: "\u2744\uFE0F", dot: "tl-dot-fridge", label: "Ball up and put in fridge", detail: "Separate into " + balls + " balls in olive oil\u2013lined containers. Refrigerate for 24 hours.", notifyTitle: "\u2744\uFE0F Time to refrigerate!", notifyBody: "Separate into " + balls + " dough balls and put them in the fridge." },
+    { id: "remove", time: removeFromFridge, icon: "\uD83C\uDF21\uFE0F", dot: "tl-dot-out", label: "Remove from fridge", detail: "Let dough balls come to room temperature for " + restLabel + " before cooking.", notifyTitle: "\uD83C\uDF21\uFE0F Take dough out!", notifyBody: "Remove dough balls from the fridge. " + restLabel + " until pizza time!" },
+    { id: "cook", time: cookDateTime, icon: "\uD83D\uDD25", dot: "tl-dot-cook", label: "Pizza time!", detail: "Stretch, top, and cook your pizzas.", notifyTitle: "\uD83D\uDD25 Pizza time!", notifyBody: "Your dough is ready. Time to make pizza!" }
+  ];
+
+  var html = "<div class=\"timeline\">";
+  for (var i = 0; i < events.length; i++) {
+    var ev = events[i];
+    var isPast = ev.time.getTime() < new Date().getTime();
+    var isSet = scheduledTimers[ev.id] ? true : false;
+
+    html += "<div class=\"timeline-item\">" +
+      "<div class=\"tl-dot " + ev.dot + "\">" + ev.icon + "</div>" +
+      "<div class=\"tl-content\">" +
+        "<div class=\"tl-time\">" + formatTime12(ev.time) +
+          "<span class=\"tl-day\">" + dayLabel(ev.time, cookDateTime) + "</span>" +
+        "</div>" +
+        "<div class=\"tl-label\">" + ev.label + "<br>" + ev.detail + "</div>";
+
+    // Add notify button for all except cook (or add for cook too)
+    if (!isPast) {
+      html += "<button class=\"tl-notify-btn" + (isSet ? " set" : "") + "\" " +
+        "id=\"btn-" + ev.id + "\" " +
+        "onclick=\"toggleReminder('" + ev.id + "', " + ev.time.getTime() + ", '" + ev.notifyTitle.replace(/'/g, "\\'") + "', '" + ev.notifyBody.replace(/'/g, "\\'") + "')\">" +
+        (isSet ? "\u2705 Reminder Set" : "\uD83D\uDD14 Set Reminder") +
+        "</button>";
+    } else {
+      html += "<span style=\"display:inline-block;margin-top:8px;font-size:0.75rem;color:var(--muted);font-style:italic;\">Already passed</span>";
+    }
+
+    html += "</div></div>";
+  }
+
+  html += "<button class=\"set-all-btn\" onclick=\"setAllReminders()\">Set All Reminders</button>";
+  html += "</div>";
+
+  document.getElementById("timeline").innerHTML = html;
+}
+
+function toggleReminder(id, timestamp, title, body) {
+  var btn = document.getElementById("btn-" + id);
+  if (scheduledTimers[id]) {
+    // Cancel
+    clearTimeout(scheduledTimers[id]);
+    delete scheduledTimers[id];
+    if (btn) { btn.classList.remove("set"); btn.innerHTML = "\uD83D\uDD14 Set Reminder"; }
+    showToast("Reminder cancelled");
+  } else {
+    // Set
+    requestNotifPermission(function() {
+      var d = new Date(timestamp);
+      var success = scheduleTimer(id, d, title, body);
+      if (success && btn) {
+        btn.classList.add("set");
+        btn.innerHTML = "\u2705 Reminder Set";
+        showToast("Reminder set for " + formatTime12(d));
+      }
+    });
+  }
+}
+
+function setAllReminders() {
+  requestNotifPermission(function() {
+    var buttons = document.querySelectorAll(".tl-notify-btn:not(.set)");
+    var count = 0;
+    for (var i = 0; i < buttons.length; i++) {
+      buttons[i].click();
+      count++;
+    }
+    if (count === 0) {
+      showToast("All reminders already set!");
+    }
+  });
 }
 
 // ===== EVENT LISTENERS =====
@@ -376,15 +603,29 @@ document.getElementById("weightSlider").addEventListener("input", function(e) {
   update();
 });
 
+document.getElementById("planBtn").addEventListener("click", function() {
+  buildTimeline();
+});
+
+// Set default cook date to tomorrow
+(function() {
+  var tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  var y = tomorrow.getFullYear();
+  var m = (tomorrow.getMonth() + 1);
+  var d = tomorrow.getDate();
+  document.getElementById("cookDate").value = y + "-" + (m < 10 ? "0" + m : m) + "-" + (d < 10 ? "0" + d : d);
+})();
+
 // Initial render
 update();
 
-// ===== SERVICE WORKER REGISTRATION =====
+// ===== SERVICE WORKER =====
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", function() {
     navigator.serviceWorker.register("sw.js").then(
-      function() { /* registered */ },
-      function() { /* failed, app still works, just no offline */ }
+      function() {},
+      function() {}
     );
   });
 }

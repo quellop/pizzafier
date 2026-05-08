@@ -1,4 +1,5 @@
-var CACHE_NAME = "pizzafier-v" + Date.now();
+var CACHE_VERSION = "v3";
+var CACHE_NAME = CACHE_VERSION + "-pizzafier";
 var ASSETS = [
   "./",
   "./index.html",
@@ -11,7 +12,6 @@ self.addEventListener("install", function(event) {
       return cache.addAll(ASSETS);
     })
   );
-  // Force new version to activate immediately
   self.skipWaiting();
 });
 
@@ -27,7 +27,6 @@ self.addEventListener("activate", function(event) {
 });
 
 self.addEventListener("fetch", function(event) {
-  // Always fetch fresh from network first for HTML/JSON
   if (event.request.url.includes(".html") || event.request.url.includes(".json")) {
     event.respondWith(
       fetch(event.request).catch(function() {
@@ -35,7 +34,6 @@ self.addEventListener("fetch", function(event) {
       })
     );
   } else {
-    // For other assets, use cache if available
     event.respondWith(
       caches.match(event.request).then(function(cached) {
         return cached || fetch(event.request);

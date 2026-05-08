@@ -302,6 +302,16 @@
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
+<!-- In-app reminder alert (fallback when push notifications unavailable) -->
+<div id="reminder-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:200; align-items:center; justify-content:center; padding:20px;">
+  <div style="background:white; border-radius:16px; padding:28px 24px; max-width:320px; width:100%; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+    <div style="font-size:2.5rem; margin-bottom:12px;">&#9200;</div>
+    <div id="reminder-title" style="font-weight:700; font-size:1.1rem; margin-bottom:8px; color:#1a1a1a;"></div>
+    <div id="reminder-body" style="color:#555; font-size:0.9rem; line-height:1.5; margin-bottom:20px;"></div>
+    <button onclick="document.getElementById('reminder-overlay').style.display='none'" style="background:#C4421A; color:white; border:none; border-radius:10px; padding:12px 28px; font-size:1rem; font-weight:600; cursor:pointer;">Got it</button>
+  </div>
+</div>
+
 <script>
 // ===== RECIPE ENGINE =====
 var BASE_FLOUR = 306;
@@ -430,9 +440,23 @@ function showToast(msg) {
   setTimeout(function() { t.classList.remove("show"); }, 3000);
 }
 
+function showReminderAlert(title, body) {
+  document.getElementById("reminder-title").textContent = title;
+  document.getElementById("reminder-body").textContent = body;
+  document.getElementById("reminder-overlay").style.display = "flex";
+  try { navigator.vibrate && navigator.vibrate([200, 100, 200]); } catch(e) {}
+}
+
 function requestNotifPermission(callback) {
+  var isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+  var isStandalone = window.navigator.standalone === true;
+
   if (!("Notification" in window)) {
-    showToast("Notifications not supported on this browser");
+    // iOS Safari outside a Home Screen PWA \u2014 schedule anyway, in-app alert will fire
+    if (isIOS && !isStandalone) {
+      showToast("Reminder set \u2014 keep app open. Add to Home Screen for push alerts.");
+    }
+    callback();
     return;
   }
   if (Notification.permission === "granted") {
@@ -440,10 +464,14 @@ function requestNotifPermission(callback) {
   } else if (Notification.permission !== "denied") {
     Notification.requestPermission().then(function(perm) {
       if (perm === "granted") { callback(); }
-      else { showToast("Enable notifications in Settings to use timers"); }
+      else {
+        showToast("Reminder set \u2014 keep app open for in-app alert");
+        callback();
+      }
     });
   } else {
-    showToast("Notifications blocked \u2014 enable in Settings > Safari");
+    showToast("Reminder set \u2014 keep app open for in-app alert");
+    callback();
   }
 }
 
@@ -465,12 +493,12 @@ function scheduleTimer(id, date, title, body) {
 
   // Cap setTimeout to avoid overflow (max ~24.8 days, well within range)
   scheduledTimers[id] = setTimeout(function() {
-    // Fire notification
     if ("Notification" in window && Notification.permission === "granted") {
       new Notification(title, { body: body, icon: "apple-touch-icon.png", tag: id });
+      try { navigator.vibrate && navigator.vibrate([200, 100, 200]); } catch(e) {}
+    } else {
+      showReminderAlert(title, body);
     }
-    // Also alert as fallback (works even if page is in foreground)
-    try { navigator.vibrate && navigator.vibrate([200, 100, 200]); } catch(e) {}
     delete scheduledTimers[id];
     // Update button state
     var btn = document.getElementById("btn-" + id);

@@ -1,4 +1,4 @@
-var CACHE_NAME = "pizzafier-v1";
+var CACHE_NAME = "pizzafier-v" + Date.now();
 var ASSETS = [
   "./",
   "./index.html",
@@ -11,6 +11,7 @@ self.addEventListener("install", function(event) {
       return cache.addAll(ASSETS);
     })
   );
+  // Force new version to activate immediately
   self.skipWaiting();
 });
 
@@ -18,8 +19,7 @@ self.addEventListener("activate", function(event) {
   event.waitUntil(
     caches.keys().then(function(names) {
       return Promise.all(
-        names.filter(function(name) { return name !== CACHE_NAME; })
-             .map(function(name) { return caches.delete(name); })
+        names.map(function(name) { return caches.delete(name); })
       );
     })
   );
@@ -27,9 +27,19 @@ self.addEventListener("activate", function(event) {
 });
 
 self.addEventListener("fetch", function(event) {
-  event.respondWith(
-    caches.match(event.request).then(function(cached) {
-      return cached || fetch(event.request);
-    })
-  );
+  // Always fetch fresh from network first for HTML/JSON
+  if (event.request.url.includes(".html") || event.request.url.includes(".json")) {
+    event.respondWith(
+      fetch(event.request).catch(function() {
+        return caches.match(event.request);
+      })
+    );
+  } else {
+    // For other assets, use cache if available
+    event.respondWith(
+      caches.match(event.request).then(function(cached) {
+        return cached || fetch(event.request);
+      })
+    );
+  }
 });
